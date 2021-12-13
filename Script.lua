@@ -1,6 +1,6 @@
 resx,resy = 65535/1920, 65535/1080
 
-lmb_state = 0
+
 
 OVERFLOW_AT = 1000
 OVERFLOW_COUNTER = 1
@@ -10,25 +10,14 @@ function OnEvent(event, arg)
 	OutputLogMessage("\n");
 	OutputLogMessage("event = %s, arg = %s\n", event, arg);
 
-	if(event == "G_RELEASED") then
-		if(arg >= 26 and arg <= 29) then
-			if(lmb_state == 1) then
-				--ReleaseMouseButton(1)
-				lmb_state = 0
-			end			
-		end
-	end
-
 	if(event == "G_PRESSED") then
 		x,y = GetMousePosition();
 		ClearLCD()
 		OutputLCDMessage(string.format("MouseX: %d, MouseY: %d",x/(65535/1920), x/(65535/1080)))
 		OutputLCDMessage(string.format("MouseX: %d, MouseY: %d",x/(65535/1920), x/(65535/1080)))
-				
-		
-		
+								
 		if(arg >= 26 and arg <= 29) then
-			OutputLogMessage("ok");
+			local oldx,oldy = GetMousePosition();
 			local dx, dy = 0,0
 			if(arg == 26) then
 				--top
@@ -64,24 +53,22 @@ function OnEvent(event, arg)
 					MoveMouseRelative(dx*mult,dy*mult)
 				end			
 			end		
+			MoveMouseTo(oldx,oldy)
 		end
-
+		
 
 		local rangemin,rangemax = 1,7
 		local sx,sy = 600,1050		
 		local offset = 50
 		if(arg > rangemin and arg < rangemax) then
-			SelectTool(arg-rangemin-1, sx,sy,offset)
+			SelectTool(arg-3, sx,sy,offset)
 		elseif(arg == rangemin) then
-			SelectTool(7, sx,sy,offset)
+			SelectTool(6, sx,sy,offset)
 		elseif(arg == rangemax) then
-			SelectTool(9, sx,sy,offset)
+			SelectTool(8, sx,sy,offset)
 		end
-
-		
-
 	end
-	--EnablePrimaryMouseButtonEvents(0);
+	
 end
 
 function SelectTool(i,sx,sy,offx)
